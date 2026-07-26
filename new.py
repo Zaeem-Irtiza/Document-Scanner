@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 
 # ---------------------- CONFIG ----------------------
-IMAGE_PATH = "./input/5.jpg"
+IMAGE_PATH = "./input/1.jpg"
 WIDTH, HEIGHT = 640, 480
 # -----------------------------------------------------
 

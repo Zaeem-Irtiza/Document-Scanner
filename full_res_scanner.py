@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 
-img_orig = cv2.imread("./input/7.jpeg")
+img_orig = cv2.imread("./input/5.jpg")
 height_orig, width_orig = img_orig.shape[:2]
 
 height_small, width_small = 640, 640
@@ -37,29 +37,20 @@ for c in contours:
 if biggest.size != 0:
     cv2.drawContours(img_orig, [biggest], -1, (255, 0, 0), 2)
 
-# print(biggest, "biggest original")
-# biggest_orig = reorder(biggest)
-# print(biggest_orig, "after reorder")
-# print(biggest.shape, "org shape")
-# print(biggest_orig.shape, "reorder shape")
-# print(biggest[0], "first coord")
-temp = biggest.copy()
-biggest[1][0] = temp[3][0]
-biggest[2][0] = temp[1][0]
-biggest[3][0] = temp[2][0]
-biggest = biggest.astype(np.float32)
-scaled_width = biggest[:,:,0] * scale_x
-scaled_height = biggest[:,:,1] * scale_y
-# print(f"scaled width:{scaled_width}")
-# print(f"scaled height:{scaled_height}")
-#print(biggest, "updated coord")
-points1 = np.float32(biggest)
-# print(points1, "Point 1")
-points2 = np.float32([[0, 0], [width_orig, 0], [0, height_orig], [width_orig, height_orig]])
-# print(points2, "Point 2")
-matrix = cv2.getPerspectiveTransform(points1, points2)
-img_warped = cv2.warpPerspective(img_final, matrix, (width_orig, height_orig))
-# cv2.imwrite("./output.jpeg", img_warped)
+pts = biggest.reshape((4, 2))
+new_pts = np.zeros((4, 1, 2), dtype=np.float32)
+
+add = pts.sum(axis=1)
+new_pts[0] = pts[np.argmin(add)]   # top-left has smallest sum
+new_pts[3] = pts[np.argmax(add)]   # bottom-right has largest sum
+
+diff = np.diff(pts, axis=1)
+new_pts[1] = pts[np.argmin(diff)]  # top-right has smallest difference
+new_pts[2] = pts[np.argmax(diff)]  # bottom-left has largest difference
+
+matrix = cv2.getPerspectiveTransform(new_pts.astype(np.float32), np.array([[0, 0], [width_small, 0], [0, height_small], [width_small, height_small]], dtype=np.float32))
+img_warped = cv2.warpPerspective(img_final, matrix, (width_small, height_small))
+cv2.imwrite("./output_full_res.jpeg", img_warped)
 
 cv2.imshow("Original Image", img_orig)
 cv2.imshow("Warped Image", img_warped)
