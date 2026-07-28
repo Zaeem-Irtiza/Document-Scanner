@@ -90,6 +90,10 @@ python Document_Scanner.py
 
 ```
 output.jpeg
+![Demo Screenshot](./output/output.jpeg)
+
+Output Video
+[Output Video](./output/output_vid.mp4)
 ```
 
 ---

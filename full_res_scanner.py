@@ -1,15 +1,12 @@
 import cv2
 import numpy as np
 
-img_orig = cv2.imread("./input/5.jpg")
+img_orig = cv2.imread("./input/7.jpeg")
 height_orig, width_orig = img_orig.shape[:2]
 
 height_small, width_small = 640, 640
 scale_x = width_orig/width_small
 scale_y = height_orig/height_small
-
-# print(f"scale for x coordinate:{scale_x}")
-# print(f"scale for y coordinate:{scale_y}")
 
 img_orig = cv2.resize(img_orig, (width_small, height_small))
 img_final = img_orig.copy()
@@ -41,16 +38,16 @@ pts = biggest.reshape((4, 2))
 new_pts = np.zeros((4, 1, 2), dtype=np.float32)
 
 add = pts.sum(axis=1)
-new_pts[0] = pts[np.argmin(add)]   # top-left has smallest sum
-new_pts[3] = pts[np.argmax(add)]   # bottom-right has largest sum
+new_pts[0] = pts[np.argmin(add)]
+new_pts[3] = pts[np.argmax(add)]
 
 diff = np.diff(pts, axis=1)
-new_pts[1] = pts[np.argmin(diff)]  # top-right has smallest difference
-new_pts[2] = pts[np.argmax(diff)]  # bottom-left has largest difference
+new_pts[1] = pts[np.argmin(diff)]
+new_pts[2] = pts[np.argmax(diff)]
 
 matrix = cv2.getPerspectiveTransform(new_pts.astype(np.float32), np.array([[0, 0], [width_small, 0], [0, height_small], [width_small, height_small]], dtype=np.float32))
 img_warped = cv2.warpPerspective(img_final, matrix, (width_small, height_small))
-cv2.imwrite("./output_full_res.jpeg", img_warped)
+cv2.imwrite("./output.jpeg", img_warped)
 
 cv2.imshow("Original Image", img_orig)
 cv2.imshow("Warped Image", img_warped)

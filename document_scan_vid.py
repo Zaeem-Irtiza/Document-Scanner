@@ -1,19 +1,22 @@
 import cv2
 import numpy as np
-from utils import preprocess
+from utils import preprocess_full_res
 
-video_path = "./input/vid.mp4"
+video_path = "./input/vid1.mp4"
 cap = cv2.VideoCapture(video_path)
 
 while True:
     ret, frame = cap.read()
-    final_img = preprocess(frame)
-    cv2.imshow('Webcam Feed', final_img)
-
-    # Wait for 1 millisecond and check if the user pressed the 'q' key to quit
-    if cv2.waitKey(1) & 0xFF == ord('q'):
+    if not ret:
+        print("End of video or failed to read frame")
         break
 
-# Release the camera capture object and close all active OpenCV windows
+    final_img = preprocess_full_res(frame)
+
+    if final_img is not None:
+        cv2.imshow('Video Feed', final_img)
+
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
 cap.release()
 cv2.destroyAllWindows()
