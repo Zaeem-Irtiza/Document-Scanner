@@ -146,7 +146,7 @@ OpenCV then warps the original image into a top-down view of the document.
 ![Demo Screenshot](output/output.png)
 
 Output Video
-[[Output Video](https://github.com/user-attachments/assets/bcdda8ab-5c47-49fc-a1f8-66c913acd0d3)
+[[Output Video](output/output_vid.mp4)
 
 ---
 
