@@ -13,6 +13,7 @@ def preprocess_full_res(img_orig, width_small=640, height_small=640):
     kernel = np.ones((5, 5))
     img = cv2.dilate(img, kernel, iterations=2)
     img = cv2.erode(img, kernel, iterations=1)
+    img_canny = img.copy()
 
     contours, hierarchy = cv2.findContours(img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     contours = sorted(contours, key=cv2.contourArea, reverse=True)[:5]
@@ -32,23 +33,19 @@ def preprocess_full_res(img_orig, width_small=640, height_small=640):
     if biggest.size != 0:
         img_contours = img_small.copy()
         cv2.drawContours(img_contours, [biggest], -1, (0, 255, 0), 3)
-        cv2.imshow('Contours', img_contours)
-    else:
-        cv2.imshow('Contours', img_small)
-
     if biggest.size == 0:
-        return None
+        return None, img_contours, img_canny
 
     pts = biggest.reshape((4, 2))
     new_pts = np.zeros((4, 1, 2), dtype=np.float32)
 
     add = pts.sum(axis=1)
-    new_pts[0] = pts[np.argmin(add)]   # top-left
-    new_pts[3] = pts[np.argmax(add)]   # bottom-right
+    new_pts[0] = pts[np.argmin(add)]
+    new_pts[3] = pts[np.argmax(add)]   
 
     diff = np.diff(pts, axis=1)
-    new_pts[1] = pts[np.argmin(diff)]  # top-right
-    new_pts[2] = pts[np.argmax(diff)]  # bottom-left
+    new_pts[1] = pts[np.argmin(diff)]
+    new_pts[2] = pts[np.argmax(diff)]
 
     new_pts_full = new_pts.copy()
     new_pts_full[:, 0, 0] *= scale_x
@@ -67,4 +64,4 @@ def preprocess_full_res(img_orig, width_small=640, height_small=640):
     matrix = cv2.getPerspectiveTransform(new_pts_full.astype(np.float32), points2)
     img_warped = cv2.warpPerspective(img_orig, matrix, (dest_width, dest_height))
 
-    return img_warped
+    return img_warped, img_contours, img_canny
