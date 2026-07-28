@@ -30,9 +30,10 @@ def preprocess_full_res(img_orig, width_small=640, height_small=640):
                 biggest = approx
                 max_area = area
 
+    img_contours = img_small.copy()
     if biggest.size != 0:
-        img_contours = img_small.copy()
         cv2.drawContours(img_contours, [biggest], -1, (0, 255, 0), 3)
+
     if biggest.size == 0:
         return None, img_contours, img_canny
 
