@@ -143,10 +143,10 @@ OpenCV then warps the original image into a top-down view of the document.
 - Flattened document
 - Ready for further processing or OCR
 
-![Demo Screenshot](./output/output.jpeg)
+![Demo Screenshot](output/output.jpeg)
 
 Output Video
-[Output Video](./output/output_vid.mp4)
+[Output Video](output/output_vid.mp4)
 
 ---
 
